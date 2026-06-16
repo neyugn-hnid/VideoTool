@@ -1,0 +1,23 @@
+[theme]
+# Pixelle-Video Premium Dark Theme
+# Inspired by Linear + Vercel design language
+
+# Primary colors
+primaryColor = "#6366F1"        # Indigo-500 accent
+backgroundColor = "#0B0E14"     # Deep dark background
+secondaryBackgroundColor = "#141820"  # Card/surface background
+textColor = "#E2E8F0"           # Slate-200 text
+font = "sans serif"
+
+# Server
+[server]
+maxUploadSize = 200
+runOnSave = false
+
+# Browser
+[browser]
+gatherUsageStats = false
+
+# Runner
+[runner]
+magicEnabled = false
