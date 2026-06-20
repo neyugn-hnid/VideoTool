@@ -15,11 +15,10 @@ from web.pipelines.api_workflows import (
     workflow_source_help,
     workflow_source_label,
 )
-from web.components.content_input import render_version_info
+
 from web.components.digital_tts_config import render_style_config
 from web.utils.async_helpers import run_async
 from web.utils.history_persistence import save_web_generation_history
-from web.utils.streamlit_helpers import check_and_warn_selfhost_workflow
 from pixelle_video.config import config_manager
 from pixelle_video.utils.os_util import create_task_output_dir
 
@@ -50,7 +49,7 @@ class DigitalHumanPipelineUI(PipelineUI):
             asset_params = self.render_digital_human_input()
             style_params = render_style_config(pixelle_video)
             # bgm_params = render_bgm_section(key_prefix="asset_")
-            render_version_info()
+
         
         # ====================================================================
         # Middle Column: Video Configuration
@@ -192,12 +191,12 @@ class DigitalHumanPipelineUI(PipelineUI):
             if st.session_state.get("digital_human_image_service_source") not in image_source_options:
                 st.session_state.pop("digital_human_image_service_source", None)
             image_service_source = st.radio(
-                "前置图片生成服务" if get_language() == "zh_CN" else "Pre-image generation service",
+                tr('digital_human.pre_image_service'),
                 image_source_options,
                 format_func=lambda x: source_options[x],
                 horizontal=True,
                 key="digital_human_image_service_source",
-                help=workflow_source_help("前置图片生成" if get_language() == "zh_CN" else "pre-image generation"),
+                help=workflow_source_help(tr('digital_human.pre_image_subject')),
             )
 
             image_workflows = []
@@ -210,17 +209,13 @@ class DigitalHumanPipelineUI(PipelineUI):
                 image_workflows = digital_image_workflows(image_service_source)
             elif image_service_source == "api":
                 if not api_image_workflows:
-                    st.warning(
-                        "没有找到 API 图片模型，请先配置图像模型提供商。"
-                        if get_language() == "zh_CN"
-                        else "No API image model found. Configure an image provider first."
-                    )
+                    st.warning(tr('digital_human.no_api_image'))
                 else:
                     image_workflows = api_image_workflows
 
             image_options = [wf["display_name"] for wf in image_workflows]
             selected_image_workflow = st.selectbox(
-                "前置图片工作流/模型" if get_language() == "zh_CN" else "Pre-image workflow/model",
+                tr('digital_human.pre_image_workflow'),
                 image_options if image_options else ["No workflow/model available"],
                 index=0,
                 key="digital_human_image_workflow",
@@ -255,12 +250,12 @@ class DigitalHumanPipelineUI(PipelineUI):
             if st.session_state.get("digital_human_video_service_source") not in video_source_options:
                 st.session_state.pop("digital_human_video_service_source", None)
             video_service_source = st.radio(
-                "口播视频合成服务" if get_language() == "zh_CN" else "Talking-video synthesis service",
+                tr('digital_human.talking_video_service'),
                 video_source_options,
                 format_func=lambda x: source_options[x],
                 horizontal=True,
                 key="digital_human_video_service_source",
-                help=workflow_source_help("口播视频合成" if get_language() == "zh_CN" else "talking-video synthesis"),
+                help=workflow_source_help(tr('digital_human.talking_video_subject')),
             )
 
             video_workflows = []
@@ -273,17 +268,13 @@ class DigitalHumanPipelineUI(PipelineUI):
                 video_workflows = digital_video_workflows(video_service_source)
             elif video_service_source == "api":
                 if not api_video_workflows:
-                    st.warning(
-                        "没有找到已验证的 API 参考生视频模型，请先配置 DashScope 等提供商。"
-                        if get_language() == "zh_CN"
-                        else "No verified API reference-to-video model found. Configure a provider first."
-                    )
+                    st.warning(tr('digital_human.no_api_video'))
                 else:
                     video_workflows = api_video_workflows
 
             video_options = [wf["display_name"] for wf in video_workflows]
             selected_video_workflow = st.selectbox(
-                "口播视频工作流/模型" if get_language() == "zh_CN" else "Talking-video workflow/model",
+                tr('digital_human.talking_video_workflow'),
                 video_options if video_options else ["No workflow/model available"],
                 index=0,
                 key="digital_human_video_workflow",
@@ -308,15 +299,7 @@ class DigitalHumanPipelineUI(PipelineUI):
                 if key.endswith("_workflow_path") and isinstance(path, str) and not Path(path).exists()
             ]
             if missing_workflows:
-                st.warning(
-                    (
-                        "当前选择缺少数字人口播工作流文件："
-                        + "、".join(missing_workflows)
-                    )
-                    if get_language() == "zh_CN"
-                    else "The current selection is missing digital-human workflow files: "
-                    + ", ".join(missing_workflows)
-                )
+                st.warning(tr('digital_human.missing_workflows') + ", ".join(missing_workflows))
 
             return workflow_config
 
@@ -899,7 +882,7 @@ class DigitalHumanPipelineUI(PipelineUI):
                         task_id=Path(final_video_path).parent.name,
                         video_path=final_video_path,
                         pipeline="digital_human",
-                        title="数字人口播" if get_language() == "zh_CN" else "Digital Human",
+                        title=tr('digital_human.title'),
                         input_params={
                             "text": goods_text or goods_title,
                             "mode": mode,

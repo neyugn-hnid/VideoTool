@@ -33,9 +33,8 @@ from web.pipelines.api_workflows import (
     workflow_source_help,
     workflow_source_label,
 )
-from web.components.content_input import render_bgm_section, render_version_info
+from web.components.content_input import render_bgm_section
 from web.utils.async_helpers import run_async
-from web.utils.streamlit_helpers import check_and_warn_selfhost_workflow
 from pixelle_video.config import config_manager
 from pixelle_video.models.progress import ProgressEvent
 
@@ -66,7 +65,7 @@ class AssetBasedPipelineUI(PipelineUI):
         with left_col:
             asset_params = self._render_asset_input()
             bgm_params = render_bgm_section(key_prefix="asset_")
-            render_version_info()
+
         
         # ====================================================================
         # Middle Column: Video Configuration
@@ -196,7 +195,7 @@ class AssetBasedPipelineUI(PipelineUI):
             source_options = {
                 "runninghub": tr("asset_based.source.runninghub"),
                 "selfhost": tr("asset_based.source.selfhost"),
-                "api": "API 调用" if get_language() == "zh_CN" else "API call",
+                "api": tr('asset_based.api_call'),
             }
             
             # Check if RunningHub API key is configured
@@ -252,14 +251,14 @@ class AssetBasedPipelineUI(PipelineUI):
                 st.session_state.pop("asset_source", None)
 
             source = st.radio(
-                "素材分析服务" if get_language() == "zh_CN" else "Asset analysis service",
+                tr('asset_based.analysis_service'),
                 options=source_keys,
                 format_func=lambda x: source_options[x],
                 index=default_source_index,
                 horizontal=True,
                 key="asset_source",
                 label_visibility="visible",
-                help=workflow_source_help("素材分析" if get_language() == "zh_CN" else "asset analysis"),
+                help=workflow_source_help(tr('asset_based.analysis_subject')),
             )
 
             def build_analysis_workflows(source_name: str) -> list[dict]:
@@ -307,7 +306,7 @@ class AssetBasedPipelineUI(PipelineUI):
 
             if analysis_options:
                 selected_analysis = st.selectbox(
-                    "素材分析工作流/模型" if get_language() == "zh_CN" else "Asset analysis workflow/model",
+                    tr('asset_based.analysis_workflow'),
                     analysis_options,
                     index=0,
                     key="asset_analysis_workflow",
@@ -315,26 +314,14 @@ class AssetBasedPipelineUI(PipelineUI):
                 )
                 selected_analysis_workflow = analysis_workflows[analysis_options.index(selected_analysis)]
             else:
-                st.warning(
-                    "当前服务没有可用的素材分析工作流/模型。"
-                    if get_language() == "zh_CN"
-                    else "No asset analysis workflow/model is available for the selected service."
-                )
+                st.warning(tr('asset_based.no_analysis_workflow'))
             
             # Show hint based on selection
             if source == "api":
                 if not has_api_analysis:
-                    st.warning(
-                        "未配置可用于 VLM 素材分析的 API Key（DashScope/OpenAI/Gemini）。"
-                        if get_language() == "zh_CN"
-                        else "No API key configured for VLM asset analysis (DashScope/OpenAI/Gemini)."
-                    )
+                    st.warning(tr('asset_based.no_api_vlm'))
                 else:
-                    st.info(
-                        "使用上方选择的 API VLM 模型分析上传素材，不依赖 RunningHub/ComfyUI。"
-                        if get_language() == "zh_CN"
-                        else "Use the selected API VLM model to analyze uploaded assets without RunningHub/ComfyUI."
-                    )
+                    st.info(tr('asset_based.api_vlm_hint'))
             elif source == "runninghub":
                 if not has_runninghub:
                     st.warning(tr("asset_based.source.runninghub_not_configured"))
@@ -350,8 +337,6 @@ class AssetBasedPipelineUI(PipelineUI):
                         selected_analysis_workflow.get("image_workflow")
                         or selected_analysis_workflow.get("video_workflow")
                     )
-                    if workflow_for_warning:
-                        check_and_warn_selfhost_workflow(workflow_for_warning)
 
             api_video_workflow = None
             api_video_params = {}
@@ -370,27 +355,23 @@ class AssetBasedPipelineUI(PipelineUI):
 
             def animation_source_label(value: str) -> str:
                 if value == "none":
-                    return "不启用" if get_language() == "zh_CN" else "Disabled"
+                    return tr('asset_based.animation_disabled')
                 return workflow_source_label(value)
 
             animation_source = st.radio(
-                "素材动画服务" if get_language() == "zh_CN" else "Asset animation service",
+                tr('asset_based.animation_service'),
                 animation_source_options,
                 format_func=animation_source_label,
                 horizontal=True,
                 key="asset_animation_source",
-                help=(
-                    "选择是否把匹配到的图片素材动画化。不启用时保留原素材静态合成；API 模型会调用已验证的图生视频模型。"
-                    if get_language() == "zh_CN"
-                    else "Choose whether to animate matched image assets. Disabled keeps the original static asset composition; API models call verified image-to-video providers."
-                ),
+                help=tr('asset_based.animation_help'),
             )
 
             if animation_source == "api":
                 animation_workflows = api_video_workflows
                 animation_options = [wf["display_name"] for wf in animation_workflows]
                 selected_animation = st.selectbox(
-                    "素材动画工作流/模型" if get_language() == "zh_CN" else "Asset animation workflow/model",
+                    tr('asset_based.animation_workflow'),
                     animation_options,
                     index=0,
                     key="asset_animation_workflow",
@@ -567,11 +548,7 @@ class AssetBasedPipelineUI(PipelineUI):
                     
                     # Execute pipeline with progress callback
                     if video_params.get("source") == "api" and not video_params.get("analysis_vlm_model"):
-                        raise RuntimeError(
-                            "请先在素材分析服务中选择 API VLM 模型。"
-                            if get_language() == "zh_CN"
-                            else "Please select an API VLM model in the asset analysis service settings."
-                        )
+                        raise RuntimeError(tr('asset_based.select_vlm'))
 
                     ctx = run_async(pipeline(
                         assets=video_params["assets"],

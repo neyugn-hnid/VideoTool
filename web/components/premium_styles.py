@@ -13,8 +13,8 @@ def inject_custom_css():
     <style>
     /* ===== ROOT VARIABLES ===== */
     :root {
-        --accent: #6366F1;
-        --accent-glow: rgba(99, 102, 241, 0.15);
+        --accent: #3B82F6;
+        --accent-glow: rgba(59, 130, 246, 0.15);
         --bg-deep: #0B0E14;
         --bg-surface: #141820;
         --bg-elevated: #1A2235;
@@ -118,6 +118,44 @@ def inject_custom_css():
         background: var(--bg-hover);
     }
 
+    /* ===== LANGUAGE SELECTOR ===== */
+    div[data-testid="stSelectbox"]:has(#lang_selector) {
+        margin-top: 0.6rem;
+        max-width: 52px !important;
+        min-width: 52px !important;
+    }
+    div[data-testid="stSelectbox"]:has(#lang_selector) label {
+        display: none !important;
+    }
+    div[data-testid="stSelectbox"]:has(#lang_selector) div[data-baseweb="select"] {
+        width: 52px !important;
+        min-width: 52px !important;
+    }
+    div[data-testid="stSelectbox"]:has(#lang_selector) div[data-baseweb="select"] > div {
+        min-height: 22px !important;
+        height: 22px !important;
+        font-size: 0.65rem !important;
+        padding: 0 2px 0 4px !important;
+        border-radius: 4px !important;
+        background: var(--bg-surface) !important;
+        border-color: var(--border-subtle) !important;
+    }
+    div[data-testid="stSelectbox"]:has(#lang_selector) div[data-baseweb="select"] span {
+        font-size: 0.65rem !important;
+    }
+    div[data-testid="stSelectbox"]:has(#lang_selector) div[data-baseweb="select"] svg {
+        width: 10px !important;
+        height: 10px !important;
+    }
+    /* Compact columns for header */
+    div[data-testid="stHorizontalBlock"]:has(.pixelle-header) > div[data-testid="column"] {
+        padding: 0 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(.pixelle-header) {
+        gap: 0.25rem !important;
+        margin-bottom: -1rem !important;
+    }
+
     /* ===== BUTTONS ===== */
     .stButton button {
         font-weight: 600;
@@ -130,7 +168,7 @@ def inject_custom_css():
     }
     .stButton button[kind="primary"],
     .stButton button[data-testid="baseButton-primary"] {
-        background: linear-gradient(135deg, var(--accent), #818CF8);
+        background: linear-gradient(135deg, var(--accent), #60A5FA);
         color: white;
         box-shadow: 0 1px 3px var(--accent-glow);
     }
@@ -162,7 +200,7 @@ def inject_custom_css():
         font-size: 1rem !important;
         font-weight: 700 !important;
         letter-spacing: 0.02em;
-        background: linear-gradient(135deg, var(--accent), #4F46E5) !important;
+        background: linear-gradient(135deg, var(--accent), #2563EB) !important;
         border-radius: var(--radius-md) !important;
         transition: all 0.25s !important;
     }

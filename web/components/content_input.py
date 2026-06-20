@@ -17,7 +17,6 @@ Content input components for web UI (left column)
 import streamlit as st
 
 from web.i18n import tr
-from web.utils.async_helpers import get_project_version
 
 
 def render_content_input():
@@ -261,23 +260,4 @@ def render_bgm_section(key_prefix=""):
         "bgm_path": bgm_path,
         "bgm_volume": bgm_volume
     }
-
-
-def render_version_info():
-    """Render version info and GitHub link"""
-    with st.container(border=True):
-        st.markdown(f"**{tr('version.title')}**")
-        version = get_project_version()
-        github_url = "https://github.com/AIDC-AI/Pixelle-Video"
-        
-        # Version and GitHub link in one line
-        github_url = "https://github.com/AIDC-AI/Pixelle-Video"
-        badge_url = "https://img.shields.io/github/stars/AIDC-AI/Pixelle-Video"
-
-        st.markdown(
-            f'{tr("version.current")}: `{version}` &nbsp;&nbsp; '
-            f'<a href="{github_url}" target="_blank">'
-            f'<img src="{badge_url}" alt="GitHub stars" style="vertical-align: middle;">'
-            f'</a>',
-            unsafe_allow_html=True)
 

@@ -17,10 +17,9 @@ from web.pipelines.api_workflows import (
     workflow_source_help,
     workflow_source_label,
 )
-from web.components.content_input import render_version_info
+
 from web.utils.async_helpers import run_async
 from web.utils.history_persistence import save_web_generation_history
-from web.utils.streamlit_helpers import check_and_warn_selfhost_workflow
 from pixelle_video.config import config_manager
 from pixelle_video.utils.os_util import create_task_output_dir
 
@@ -49,7 +48,7 @@ class ImageToVideoPipelineUI(PipelineUI):
         # ====================================================================
         with left_col:
             asset_params = self.render_audio_visual_input(pixelle_video)
-            render_version_info()
+
 
         # ====================================================================
         # Right Column: Output Preview
@@ -147,32 +146,24 @@ class ImageToVideoPipelineUI(PipelineUI):
 
             if not source_options:
                 source_options = ["runninghub"]
-                st.warning(
-                    "没有找到可用的图生视频工作流或 API 模型。"
-                    if get_language() == "zh_CN"
-                    else "No available image-to-video workflow or API model was found."
-                )
+                st.warning(tr('i2v.no_workflow_found'))
 
             source_key = "i2v_workflow_source"
             if st.session_state.get(source_key) not in source_options:
                 st.session_state.pop(source_key, None)
 
             workflow_source = st.radio(
-                "生成来源" if get_language() == "zh_CN" else "Generation source",
+                tr('i2v.generation_source'),
                 source_options,
                 format_func=workflow_source_label,
                 horizontal=True,
                 key=source_key,
-                help=workflow_source_help("图生视频" if get_language() == "zh_CN" else "image-to-video"),
+                help=workflow_source_help(tr('i2v.subject')),
             )
             
             i2v_workflows = list_i2v_workflows()
             if workflow_source != "api" and not i2v_workflows:
-                st.warning(
-                    "当前来源下没有图生视频工作流（需要 i2v_*.json）。"
-                    if get_language() == "zh_CN"
-                    else "No image-to-video workflow is available for this source (requires i2v_*.json)."
-                )
+                st.warning(tr('i2v.no_workflow_for_source'))
             workflow_options = [wf["display_name"] for wf in i2v_workflows] 
             workflow_keys = [wf["key"] for wf in i2v_workflows]               
             default_workflow_index = 0
@@ -194,10 +185,6 @@ class ImageToVideoPipelineUI(PipelineUI):
                 workflow_key = None
                 workflow_info = None
             
-            # Check and warn for selfhost workflow (auto popup if not confirmed)
-            if workflow_key and not is_api_workflow(workflow_key):
-                check_and_warn_selfhost_workflow(workflow_key)
-
             api_video_params = render_api_video_controls(
                 workflow_info,
                 key_prefix="i2v",
@@ -293,7 +280,7 @@ class ImageToVideoPipelineUI(PipelineUI):
                                 task_id=task_id,
                                 video_path=media_result.url,
                                 pipeline="image_to_video",
-                                title="图生视频" if get_language() == "zh_CN" else "Image to Video",
+                                title=tr('i2v.title'),
                                 input_params={
                                     "text": prompt,
                                     "prompt_text": prompt,
@@ -353,7 +340,7 @@ class ImageToVideoPipelineUI(PipelineUI):
                             task_id=task_id,
                             video_path=final_video_path,
                             pipeline="image_to_video",
-                            title="图生视频" if get_language() == "zh_CN" else "Image to Video",
+                            title=tr('i2v.title'),
                             input_params={
                                 "text": prompt,
                                 "prompt_text": prompt,

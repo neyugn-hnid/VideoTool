@@ -103,14 +103,8 @@
   },
   "58": {
     "inputs": {
-      "width": [
-        "90",
-        0
-      ],
-      "height": [
-        "91",
-        0
-      ],
+      "width": 768,
+      "height": 1024,
       "batch_size": 1
     },
     "class_type": "EmptySD3LatentImage",
@@ -163,22 +157,5 @@
       "title": "ModelSamplingAuraFlow"
     }
   },
-  "90": {
-    "inputs": {
-      "value": 768
-    },
-    "class_type": "easy int",
-    "_meta": {
-      "title": "$width.value"
-    }
-  },
-  "91": {
-    "inputs": {
-      "value": 1024
-    },
-    "class_type": "easy int",
-    "_meta": {
-      "title": "$height.value"
-    }
-  }
+
 }

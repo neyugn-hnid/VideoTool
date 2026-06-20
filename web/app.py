@@ -40,7 +40,7 @@ def main():
     """Main entry point with navigation"""
     # Define pages using st.Page
     home_page = st.Page(
-        "pages/1_🎬_Home.py",
+        "pages/home.py",
         title="Home",
         default=True
     )

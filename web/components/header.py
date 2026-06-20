@@ -18,54 +18,68 @@ DESIGN_VARIANCE: 5 | MOTION_INTENSITY: 3 | VISUAL_DENSITY: 4
 
 import streamlit as st
 
-from web.i18n import tr, get_available_languages, set_language
+from web.i18n import tr, set_language
 from web.utils.streamlit_helpers import safe_rerun
 from web.components.premium_styles import inject_custom_css
 
 
 def render_header():
-    """Render premium page header with title, version badge, and language selector"""
+    """Render premium page header with title, version badge, and language toggle"""
     # Inject custom CSS once per session
     if "css_injected" not in st.session_state:
         inject_custom_css()
         st.session_state.css_injected = True
     
-    # Premium header layout
-    st.markdown(
-        f"""
-        <div class="pixelle-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-                <h3>{tr('app.title')}</h3>
-                <span class="header-badge">v0.2.0</span>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Inject CSS chỉ cho gear button, không ảnh hưởng nút khác
+    st.markdown("""<style>
+        .st-key-gear_btn button {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 4px !important;
+            font-size: 20px !important;
+            min-width: unset !important;
+            min-height: unset !important;
+        }
+        .st-key-gear_btn button:hover {
+            background: transparent !important;
+            border: none !important;
+        }
+        /* Ẩn icon link heading */
+        [data-testid="stHeaderActionElements"] {
+            display: none !important;
+        }
+    </style>""", unsafe_allow_html=True)
     
-    # Language selector (inline, compact)
-    _render_language_selector()
+    # Single row: title (left) | gear (right)
+    cols = st.columns([9, 1])
+    
+    with cols[0]:
+        st.markdown(
+            f"""<div style="display:flex;align-items:center;gap:0.75rem;">
+                <h3 style="margin:0;">{tr('app.title')}</h3>
+            </div>""",
+            unsafe_allow_html=True
+        )
+    
+    with cols[1]:
+        _render_settings_button()
 
 
-def _render_language_selector():
-    """Render compact inline language selector"""
-    languages = get_available_languages()
-    lang_options = [f"{code} - {name}" for code, name in languages.items()]
+def _render_settings_button():
+    """Render a gear/settings icon button"""
+    from web.utils.streamlit_helpers import safe_rerun
     
-    current_lang = st.session_state.get("language", "zh_CN")
-    current_index = list(languages.keys()).index(current_lang) if current_lang in languages else 0
+    is_settings = st.session_state.get("admin_page", "dashboard") == "settings"
+    icon = "🏠" if is_settings else "⚙️"
+    label = "Dashboard" if is_settings else "Cài đặt"
     
-    selected = st.selectbox(
-        tr("language.select"),
-        options=lang_options,
-        index=current_index,
-        label_visibility="collapsed",
-        key="lang_selector_header"
-    )
-    
-    selected_code = selected.split(" - ")[0]
-    if selected_code != current_lang:
-        st.session_state.language = selected_code
-        set_language(selected_code)
+    if st.button(icon, key="gear_btn", help=label):
+        st.session_state.admin_page = "settings" if not is_settings else "dashboard"
         safe_rerun()
+
+
+def _render_lang_dropdown():
+    """Language is fixed to Vietnamese"""
+    pass
 

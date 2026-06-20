@@ -85,11 +85,7 @@ def render_single_output(pixelle_video, video_params):
 
             from pixelle_video.utils.template_util import get_template_type
             if frame_template and get_template_type(frame_template) == "video" and not workflow_key:
-                st.error(
-                    "请选择视频生成工作流或 API 视频模型后再生成。"
-                    if get_language() == "zh_CN"
-                    else "Please select a video workflow or API video model before generating."
-                )
+                st.error(tr('output_preview.select_workflow_first'))
                 st.stop()
             
             # Show progress
@@ -206,7 +202,7 @@ def render_single_output(pixelle_video, video_params):
                         video_bytes = video_file.read()
                         video_filename = os.path.basename(result.video_path)
                         st.download_button(
-                            label="⬇️ 下载视频" if get_language() == "zh_CN" else "⬇️ Download Video",
+                            label=tr('output_preview.download_video'),
                             data=video_bytes,
                             file_name=video_filename,
                             mime="video/mp4",

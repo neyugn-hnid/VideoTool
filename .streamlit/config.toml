@@ -3,7 +3,7 @@
 # Inspired by Linear + Vercel design language
 
 # Primary colors
-primaryColor = "#6366F1"        # Indigo-500 accent
+primaryColor = "#3B82F6"        # Blue-500 accent
 backgroundColor = "#0B0E14"     # Deep dark background
 secondaryBackgroundColor = "#141820"  # Card/surface background
 textColor = "#E2E8F0"           # Slate-200 text

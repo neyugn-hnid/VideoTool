@@ -98,7 +98,7 @@
   },
   "37": {
     "inputs": {
-      "unet_name": "wan-fusionx/WanT2V_MasterModel.safetensors",
+      "unet_name": "wan2.1_t2v_1.3B_fp16.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader",
@@ -128,14 +128,8 @@
   },
   "40": {
     "inputs": {
-      "width": [
-        "50",
-        0
-      ],
-      "height": [
-        "51",
-        0
-      ],
+      "width": 512,
+      "height": 288,
       "length": 81,
       "batch_size": 1
     },
@@ -164,24 +158,6 @@
     "class_type": "PrimitiveStringMultiline",
     "_meta": {
       "title": "$prompt.value!"
-    }
-  },
-  "50": {
-    "inputs": {
-      "value": 512
-    },
-    "class_type": "easy int",
-    "_meta": {
-      "title": "$width.value"
-    }
-  },
-  "51": {
-    "inputs": {
-      "value": 288
-    },
-    "class_type": "easy int",
-    "_meta": {
-      "title": "$height.value"
     }
   }
 }

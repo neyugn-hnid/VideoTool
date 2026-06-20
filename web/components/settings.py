@@ -26,8 +26,8 @@ def render_advanced_settings():
     # Check if system is configured
     is_configured = config_manager.validate()
     
-    # Expand if not configured, collapse if configured
-    with st.expander(tr("settings.title"), expanded=not is_configured):
+    # Luôn mở rộng, không có khung
+    with st.container():
         # 2-column layout: LLM | ComfyUI, followed by direct media API providers.
         llm_col, comfyui_col = st.columns(2)
         
@@ -293,7 +293,6 @@ def render_advanced_settings():
         # ====================================================================
         # Direct API media providers
         # ====================================================================
-        zh = get_language() == "zh_CN"
         api_cfg = config_manager.get_api_providers_config()
         common_cfg = api_cfg.get("common", {})
         openai_cfg = api_cfg.get("openai", {})
@@ -308,35 +307,23 @@ def render_advanced_settings():
         }
 
         with st.container(border=True):
-            st.markdown("**API 媒体模型**" if zh else "**API Media Models**")
-            st.caption(
-                "用于直连图像/视频模型，不影响上方 LLM 与 ComfyUI/RunningHub 配置。"
-                if zh
-                else "Used for direct image/video model calls. This does not affect the LLM or ComfyUI/RunningHub settings above."
-            )
+            st.markdown(f"**{tr('settings.api_media.title')}**")
+            st.caption(tr('settings.api_media.caption'))
 
             common_col, proxy_col = st.columns(2)
             with common_col:
                 api_print_model_input = st.checkbox(
-                    "打印模型请求参数" if zh else "Print model request parameters",
+                    tr('settings.api_media.print_params'),
                     value=bool(common_cfg.get("print_model_input", False)),
-                    help=(
-                        "调试用。开启后会在终端打印发送给图像/视频模型的 prompt、模型名和输入文件路径。"
-                        if zh
-                        else "For debugging. Prints prompts, model names and input file paths sent to image/video models."
-                    ),
+                    help=tr('settings.api_media.print_params_help'),
                     key="api_media_print_model_input",
                 )
             with proxy_col:
                 api_local_proxy = st.text_input(
-                    "本地代理（可选）" if zh else "Local proxy (optional)",
+                    tr('settings.api_media.local_proxy'),
                     value=common_cfg.get("local_proxy", ""),
                     placeholder="http://127.0.0.1:9090",
-                    help=(
-                        "仅部分提供商会使用，例如 OpenAI 图像模型。留空表示不使用代理。"
-                        if zh
-                        else "Only used by some providers, such as OpenAI image models. Leave blank to disable."
-                    ),
+                    help=tr('settings.api_media.local_proxy_help'),
                     key="api_media_local_proxy",
                 )
 
@@ -344,9 +331,9 @@ def render_advanced_settings():
 
             provider_col1, provider_col2 = st.columns(2)
             with provider_col1:
-                st.markdown("**OpenAI / GPT Image**")
+                st.markdown(f"**{tr('settings.api_media.openai_title')}**")
                 api_openai_use_proxy = st.checkbox(
-                    "OpenAI 启用代理" if zh else "Use proxy for OpenAI",
+                    tr('settings.api_media.use_proxy').replace('{provider}', 'OpenAI'),
                     value=bool(openai_cfg.get("use_proxy", False)),
                     key="api_media_openai_use_proxy",
                 )
@@ -363,9 +350,9 @@ def render_advanced_settings():
                     key="api_media_openai_base_url",
                 )
 
-                st.markdown("**DashScope / Wan / HappyHorse**")
+                st.markdown(f"**{tr('settings.api_media.dashscope_title')}**")
                 api_dashscope_use_proxy = st.checkbox(
-                    "DashScope 启用代理" if zh else "Use proxy for DashScope",
+                    tr('settings.api_media.use_proxy').replace('{provider}', 'DashScope'),
                     value=bool(dashscope_cfg.get("use_proxy", False)),
                     key="api_media_dashscope_use_proxy",
                 )
@@ -383,9 +370,9 @@ def render_advanced_settings():
                 )
 
             with provider_col2:
-                st.markdown("**Volcengine ARK / Seedream / Seedance**")
+                st.markdown(f"**{tr('settings.api_media.ark_title')}**")
                 api_ark_use_proxy = st.checkbox(
-                    "ARK 启用代理" if zh else "Use proxy for ARK",
+                    tr('settings.api_media.use_proxy').replace('{provider}', 'ARK'),
                     value=bool(ark_cfg.get("use_proxy", False)),
                     key="api_media_ark_use_proxy",
                 )
@@ -402,9 +389,9 @@ def render_advanced_settings():
                     key="api_media_ark_base_url",
                 )
 
-                st.markdown("**Kling AI / 可灵**")
+                st.markdown(f"**{tr('settings.api_media.kling_title')}**")
                 api_kling_use_proxy = st.checkbox(
-                    "Kling 启用代理" if zh else "Use proxy for Kling",
+                    tr('settings.api_media.use_proxy').replace('{provider}', 'Kling'),
                     value=bool(kling_cfg.get("use_proxy", False)),
                     key="api_media_kling_use_proxy",
                 )

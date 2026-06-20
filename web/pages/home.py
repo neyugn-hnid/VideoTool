@@ -34,66 +34,20 @@ from web.state.session import init_session_state, init_i18n, get_pixelle_video
 # Import components
 from web.components.header import render_header
 from web.components.settings import render_advanced_settings
+from web.i18n import tr
 from web.utils.streamlit_helpers import safe_rerun
 
 # Page config
 st.set_page_config(
-    page_title="Pixelle-Video - AI Video Generator",
+    page_title="D.AI",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 
 def render_sidebar():
-    """Render sidebar as admin navigation menu"""
-    with st.sidebar:
-        # Sidebar header
-        st.markdown(
-            """
-            <div style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0 1rem 0;border-bottom:1px solid var(--border-subtle, #1E293B);margin-bottom:0.75rem;">
-                <div style="background:linear-gradient(135deg, #6366F1, #818CF8);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:white;flex-shrink:0;">P</div>
-                <div>
-                    <div style="font-weight:600;font-size:0.9rem;color:#E2E8F0;">Pixelle-Video</div>
-                    <div style="font-size:0.65rem;color:#64748B;letter-spacing:0.03em;">AI Video Generator</div>
-                </div>
-                <span style="margin-left:auto;font-size:0.6rem;color:#64748B;background:#141820;padding:0.1rem 0.4rem;border-radius:4px;border:1px solid #1E293B;">v0.2.0</span>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        
-        # Nav label
-        st.markdown(
-            '<div style="font-size:0.65rem;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.05em;padding:0.25rem 0.5rem;margin-bottom:0.25rem;">Navigation</div>',
-            unsafe_allow_html=True
-        )
-        
-        # Current active page
-        current = st.session_state.get("admin_page", "dashboard")
-        
-        # Dashboard nav button
-        is_dashboard = current == "dashboard"
-        if st.button(
-            "Dashboard",
-            key="nav_dashboard",
-            use_container_width=True,
-            type="primary" if is_dashboard else "secondary",
-            help="Video generation pipelines"
-        ):
-            st.session_state.admin_page = "dashboard"
-            safe_rerun()
-        
-        # System Config nav button
-        is_settings = current == "settings"
-        if st.button(
-            "System Config",
-            key="nav_settings",
-            use_container_width=True,
-            type="primary" if is_settings else "secondary",
-            help="Configure LLM, ComfyUI, API providers"
-        ):
-            st.session_state.admin_page = "settings"
-            safe_rerun()
+    """Sidebar hidden — navigation via gear icon in header"""
+    pass
 
 
 def main():
@@ -104,7 +58,7 @@ def main():
     if "admin_page" not in st.session_state:
         st.session_state.admin_page = "dashboard"
     
-    # Render sidebar navigation
+    # Sidebar disabled — navigation via header gear icon
     render_sidebar()
     
     # Main content area
@@ -117,14 +71,6 @@ def main():
     # Page: System Configuration
     # ========================================================================
     if current_page == "settings":
-        st.markdown(
-            """
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
-                <h3 style="margin:0;font-weight:600;font-size:1.15rem;color:#E2E8F0;">System Configuration</h3>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
         render_advanced_settings()
         return
     

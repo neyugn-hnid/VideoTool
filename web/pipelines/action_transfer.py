@@ -18,10 +18,9 @@ from web.pipelines.api_workflows import (
     workflow_source_help,
     workflow_source_label,
 )
-from web.components.content_input import render_version_info
+
 from web.utils.async_helpers import run_async
 from web.utils.history_persistence import save_web_generation_history
-from web.utils.streamlit_helpers import check_and_warn_selfhost_workflow
 from pixelle_video.config import config_manager
 from pixelle_video.utils.os_util import create_task_output_dir
 
@@ -50,7 +49,7 @@ class ActionTransferPipelineUI(PipelineUI):
         # ====================================================================
         with left_col:
             video_params = self.render_action_transfer_video_input(pixelle_video)
-            render_version_info()
+
         
         # ====================================================================
         # Middle Column: Image Upload & Prompt
@@ -228,12 +227,12 @@ class ActionTransferPipelineUI(PipelineUI):
                 st.session_state.pop(source_key, None)
 
             workflow_source = st.radio(
-                "生成来源" if get_language() == "zh_CN" else "Generation source",
+                tr('action_transfer.generation_source'),
                 source_options,
                 format_func=workflow_source_label,
                 horizontal=True,
                 key=source_key,
-                help=workflow_source_help("动作迁移" if get_language() == "zh_CN" else "action transfer"),
+                help=workflow_source_help(tr('action_transfer.subject')),
             )
             
             transfer_workflows = list_action_transfer_workflows()
@@ -270,10 +269,6 @@ class ActionTransferPipelineUI(PipelineUI):
                 workflow_key = None
                 workflow_info = None
             
-            # Check and warn for selfhost workflow (auto popup if not confirmed)
-            if workflow_key and not is_api_workflow(workflow_key):
-                check_and_warn_selfhost_workflow(workflow_key)
-
             api_video_params = render_api_video_controls(
                 workflow_info,
                 key_prefix="action_transfer",
@@ -386,7 +381,7 @@ class ActionTransferPipelineUI(PipelineUI):
                                 task_id=task_id,
                                 video_path=media_result.url,
                                 pipeline="action_transfer",
-                                title="动作迁移" if get_language() == "zh_CN" else "Action Transfer",
+                                title=tr('action_transfer.title'),
                                 input_params={
                                     "text": prompt,
                                     "prompt_text": prompt,
@@ -450,7 +445,7 @@ class ActionTransferPipelineUI(PipelineUI):
                             task_id=task_id,
                             video_path=final_video_path,
                             pipeline="action_transfer",
-                            title="动作迁移" if get_language() == "zh_CN" else "Action Transfer",
+                            title=tr('action_transfer.title'),
                             input_params={
                                 "text": prompt,
                                 "prompt_text": prompt,

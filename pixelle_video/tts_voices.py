@@ -20,56 +20,9 @@ from typing import List, Dict, Any
 
 
 # Edge TTS voice presets for local inference
+# Only keep English and Vietnamese voices
 EDGE_TTS_VOICES: List[Dict[str, Any]] = [
-    # Chinese voices
-    {
-        "id": "zh-CN-XiaoxiaoNeural",
-        "label_key": "tts.voice.zh_CN_XiaoxiaoNeural",
-        "locale": "zh-CN",
-        "gender": "female"
-    },
-    {
-        "id": "zh-CN-XiaoyiNeural",
-        "label_key": "tts.voice.zh_CN_XiaoyiNeural",
-        "locale": "zh-CN",
-        "gender": "female"
-    },
-    {
-        "id": "zh-CN-YunjianNeural",
-        "label_key": "tts.voice.zh_CN_YunjianNeural",
-        "locale": "zh-CN",
-        "gender": "male"
-    },
-    {
-        "id": "zh-CN-YunxiNeural",
-        "label_key": "tts.voice.zh_CN_YunxiNeural",
-        "locale": "zh-CN",
-        "gender": "male"
-    },
-    {
-        "id": "zh-CN-YunyangNeural",
-        "label_key": "tts.voice.zh_CN_YunyangNeural",
-        "locale": "zh-CN",
-        "gender": "male"
-    },
-    {
-        "id": "zh-CN-YunyeNeural",
-        "label_key": "tts.voice.zh_CN_YunyeNeural",
-        "locale": "zh-CN",
-        "gender": "male"
-    },
-    {
-        "id": "zh-CN-YunfengNeural",
-        "label_key": "tts.voice.zh_CN_YunfengNeural",
-        "locale": "zh-CN",
-        "gender": "male"
-    },
-    {
-        "id": "zh-CN-liaoning-XiaobeiNeural",
-        "label_key": "tts.voice.zh_CN_liaoning_XiaobeiNeural",
-        "locale": "zh-CN",
-        "gender": "female"
-    },
+    # English voices
     {
         "id": "en-US-AriaNeural",
         "label_key": "tts.voice.en_US_AriaNeural",
@@ -106,91 +59,19 @@ EDGE_TTS_VOICES: List[Dict[str, Any]] = [
         "locale": "en-GB",
         "gender": "male"
     },
+
+    # Vietnamese voices
     {
-        "id": "ko-KR-InJoonNeural",
-        "label_key": "tts.voice.ko-KR-InJoonNeural",
-        "locale": "ko-KR",
-        "gender": "male"
-    },
-    {
-        "id": "ko-KR-SunHiNeural",
-        "label_key": "tts.voice.ko-KR-SunHiNeural",
-        "locale": "ko-KR",
+        "id": "vi-VN-HoaiMyNeural",
+        "label_key": "tts.voice.vi-VN-HoaiMyNeural",
+        "locale": "vi-VN",
         "gender": "female"
     },
     {
-        "id": "fr-FR-EloiseNeural",
-        "label_key": "tts.voice.fr-FR-EloiseNeural",
-        "locale": "fr-FR",
-        "gender": "female"
-    },
-    {
-        "id": "fr-FR-HenriNeural",
-        "label_key": "tts.voice.fr-FR-HenriNeural",
-        "locale": "fr-FR",
+        "id": "vi-VN-NamMinhNeural",
+        "label_key": "tts.voice.vi-VN-NamMinhNeural",
+        "locale": "vi-VN",
         "gender": "male"
-    },
-    {
-        "id": "pt-PT-DuarteNeural",
-        "label_key": "tts.voice.pt-PT-DuarteNeural",
-        "locale": "pt-PT",
-        "gender": "male"
-    },
-    {
-        "id": "pt-PT-RaquelNeural",
-        "label_key": "tts.voice.pt-PT-RaquelNeural",
-        "locale": "pt-PT",
-        "gender": "female"
-    },
-    {
-        "id": "de-DE-AmalaNeural",
-        "label_key": "tts.voice.de-DE-AmalaNeural",
-        "locale": "de-DE",
-        "gender": "female"
-    },
-    {
-        "id": "de-DE-ConradNeural",
-        "label_key": "tts.voice.de-DE-ConradNeural",
-        "locale": "de-DE",
-        "gender": "male"
-    },
-    
-    # English voices
-    {
-        "id": "ru-RU-DmitryNeural",
-        "label_key": "tts.voice.ru-RU-DmitryNeural",
-        "locale": "ru-RU",
-        "gender": "male"
-    },
-    {
-        "id": "ru-RU-SvetlanaNeural",
-        "label_key": "tts.voice.ru-RU-SvetlanaNeural",
-        "locale": "ru-RU",
-        "gender": "female"
-    },
-    {
-        "id": "tr-TR-AhmetNeural",
-        "label_key": "tts.voice.tr-TR-AhmetNeural",
-        "locale": "tr-TR",
-        "gender": "male"
-    },
-    {
-        "id": "tr-TR-EmelNeural",
-        "label_key": "tts.voice.tr-TR-EmelNeural",
-        "locale": "tr-TR",
-        "gender": "female"
-    },
-    {
-        "id": "es-ES-AlvaroNeural",
-        "label_key": "tts.voice.es-ES-AlvaroNeural",
-        "locale": "es-ES",
-        "gender": "male"
-    },
-    {
-        "id": "es-ES-ElviraNeural",
-        "label_key": "tts.voice.es-ES-ElviraNeural",
-        "locale": "es-ES",
-        "gender": "female"
     },
 ]
 
@@ -213,12 +94,12 @@ def get_voice_display_name(voice_id: str, tr_func=None, locale: str = "zh_CN") -
     if not voice_config:
         return voice_id
     
-    # If Chinese locale and translation function available, use translated label
-    if locale == "zh_CN" and tr_func:
+    # If translation function available, use translated label
+    if tr_func:
         label_key = voice_config["label_key"]
         return tr_func(label_key)
     
-    # For other locales, return voice ID
+    # Fallback: return voice ID
     return voice_id
 
 

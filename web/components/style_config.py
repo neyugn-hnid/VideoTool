@@ -23,7 +23,6 @@ from loguru import logger
 
 from web.i18n import tr, get_language
 from web.utils.async_helpers import run_async
-from web.utils.streamlit_helpers import check_and_warn_selfhost_workflow
 from web.pipelines.api_workflows import (
     list_api_media_workflows,
     list_local_media_workflows,
@@ -166,7 +165,6 @@ def render_style_config(pixelle_video):
                 tts_workflow_key = "selfhost/tts_edge.json"  # fallback
             
             # Check and warn for selfhost TTS workflow (auto popup if not confirmed)
-            check_and_warn_selfhost_workflow(tts_workflow_key)
             
             # Reference audio upload (optional, for voice cloning)
             ref_audio_file = st.file_uploader(
@@ -502,7 +500,7 @@ def render_style_config(pixelle_video):
                     break
             
         if selected_template_name:
-            st.info(f"📋 {tr('template.selected_template')}: **{selected_template_name}**")
+            st.info(f"{tr('template.selected_template')}: **{selected_template_name}**")
         
 
         # Display video size from template
@@ -728,13 +726,13 @@ def render_style_config(pixelle_video):
                     break
             source_key = "standard_video_workflow_source" if template_media_type == "video" else "standard_image_workflow_source"
             workflow_source = st.radio(
-                "生成来源" if get_language() == "zh_CN" else "Generation source",
+                tr('style_config.generation_source'),
                 source_options,
                 index=default_source_index,
                 format_func=workflow_source_label,
                 horizontal=True,
                 key=source_key,
-                help=workflow_source_help("快速创作媒体生成" if get_language() == "zh_CN" else "Quick Create media generation"),
+                help=workflow_source_help(tr('style_config.quick_create_subject')),
             )
 
             if workflow_source == "api":
@@ -771,7 +769,7 @@ def render_style_config(pixelle_video):
                 default_workflow_index = workflow_keys.index(saved_workflow)
         
             workflow_display = st.selectbox(
-                "Workflow" if workflow_source != "api" else ("API 模型" if get_language() == "zh_CN" else "API model"),
+                "Workflow" if workflow_source != "api" else tr('style_config.api_model'),
                 workflow_options if workflow_options else ["No workflows found"],
                 index=default_workflow_index,
                 label_visibility="visible",
@@ -788,21 +786,9 @@ def render_style_config(pixelle_video):
                 workflow_key = None
                 workflow_info = None
                 if workflow_source == "api" and template_media_type == "video":
-                    st.warning(
-                        "没有找到已验证的 API 文生视频模型，请先配置 DashScope/Seedance 等提供商，或切换到本地/RunningHub 工作流。"
-                        if get_language() == "zh_CN"
-                        else "No verified API text-to-video model found. Configure a provider or switch to local/RunningHub workflows."
-                    )
+                    st.warning(tr('style_config.no_api_t2v'))
                 else:
-                    st.warning(
-                        "当前来源下没有可用工作流。"
-                        if get_language() == "zh_CN"
-                        else "No workflow is available for the selected source."
-                    )
-            
-            # Check and warn for selfhost media workflow (auto popup if not confirmed)
-            if workflow_key and not is_api_workflow(workflow_key):
-                check_and_warn_selfhost_workflow(workflow_key)
+                    st.warning(tr('style_config.no_workflow'))
             
             # Display media size info (read-only)
             if template_media_type == "video":
@@ -859,9 +845,7 @@ def render_style_config(pixelle_video):
                 if st.button(preview_button_label, key="preview_style", use_container_width=True):
                     if not workflow_key:
                         st.error(
-                            "请先选择可用的工作流或模型。"
-                            if get_language() == "zh_CN"
-                            else "Please select an available workflow or model first."
+                            tr('style_config.select_workflow_first')
                         )
                         st.stop()
                     previewing_text = tr("style.video_previewing") if template_media_type == "video" else tr("style.previewing")

@@ -235,8 +235,8 @@ def detect_system_language() -> str:
     except Exception as e:
         logger.warning(f"Failed to detect system language: {e}")
     
-    # Fallback to English
-    return "en_US"
+    # Fallback to Vietnamese
+    return "vi_VN"
 
 
 # Auto-load locales on import
@@ -244,6 +244,10 @@ load_locales()
 
 # Auto-detect and set system language
 _detected_language = detect_system_language()
-_current_language = _detected_language
+# Always prefer Vietnamese as default if available
+if "vi_VN" in _locales:
+    _current_language = "vi_VN"
+else:
+    _current_language = _detected_language
 logger.info(f"Default language initialized to: {_current_language}")
 
